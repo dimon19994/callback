@@ -7,7 +7,11 @@ callback = []
 
 @app.route('/view')
 def hello_world():
-    return callback[-1]
+    try:
+        show = callback[-1]
+    except:
+        show = "NO DATA"
+    return show
 
 
 @app.route('/add', methods=["POST", "GET"])
