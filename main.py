@@ -5,20 +5,20 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-
 callback = []
 
 
 @app.route('/view')
-def hello_world():
+@app.route('/view/<int:id>')
+def hello_world(id=1):
     print("show data", len(callback))
 
+    row = ""
     try:
-        show = callback[-1]
-        row = ""
+        show = callback[-id]
         if show != "":
             for i in show.items():
-                row += f"{i[0]}  ->  {i[1]}<br><br>"
+                row += f"--->{i[0].upper()}<---<br>{i[1]}<br>"
     except:
         row = "NO DATA"
 
@@ -27,23 +27,29 @@ def hello_world():
 
 @app.route('/add', methods=["POST", "GET"])
 def add():
+    row_data = ""
+    if request.headers["content-type"] == 'application/x-www-form-urlencoded':
+        for i in request.values.items():
+            row_data += f"{i[0]}: {i[1]}<br>"
+    elif request.headers["content-type"] == 'application/json':
+        for i in request.json.items():
+            row_data += f"{i[0]}: {i[1]}<br>"
 
+    row_headers = ""
+    for i in request.headers.items():
+        row_headers += f"{i[0]}: {i[1]}<br>"
 
     data = {
-        "headers": request.headers,
-        "values": request.values,
-        "method": request.method
+        "method": request.method + "<br>",
+        "data": row_data + "<br>",
+        "headers": row_headers + "<br>",
     }
-    if request.is_json:
-        data["json"] = request.json
-    else:
-        data["data"]: request.data
 
     callback.append(data)
 
     print("get data")
 
-    return {"status": "200 OK"}
+    return {"status": "OK"}
 
 
 if __name__ == '__main__':
