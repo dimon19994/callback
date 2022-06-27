@@ -28,14 +28,17 @@ def hello_world():
 @app.route('/add', methods=["POST", "GET"])
 def add():
 
-    # data = request.json if request.is_json else request.data
+
     data = {
-        "json": request.json,
-        "data": request.data,
         "headers": request.headers,
         "values": request.values,
         "method": request.method
     }
+    if request.is_json:
+        data["json"] = request.json
+    else:
+        data["data"]: request.data
+
     callback.append(data)
 
     print("get data")
