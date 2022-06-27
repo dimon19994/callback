@@ -11,6 +11,8 @@ callback = []
 
 @app.route('/view')
 def hello_world():
+    print("show data", len(callback))
+
     try:
         show = callback[-1]
         row = ""
@@ -35,6 +37,8 @@ def add():
         "method": request.method
     }
     callback.append(data)
+
+    print("get data")
 
     return {"status": "200 OK"}
 
